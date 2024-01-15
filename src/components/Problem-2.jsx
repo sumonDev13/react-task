@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import { Modal, Button,Form } from 'react-bootstrap';
+import axios, { all } from 'axios';
 
 const Problem2 = () => {
   const [showModalA, setShowModalA] = useState(false);
@@ -12,16 +13,19 @@ const Problem2 = () => {
   const [allContacts, setAllContacts] = useState([]);
   const [usContacts, setUsContacts] = useState([]);
 
-  useEffect(() => {
-    // Fetch all contacts
-    fetch('https://contact.mediusware.com/api/contacts')
-      .then(res => res.json())
-      .then(data => setAllContacts(data));
 
-    // Fetch US contacts
-    fetch('https://contact.mediusware.com/api/contacts?country=US')
-      .then(res => res.json())
-      .then(data => setUsContacts(data));
+useEffect(() => {
+    const getAllContacts = async () => {
+        try {
+          const response = await axios.get('https://contact.mediusware.com/api/contacts/');
+          setAllContacts(response.data);
+        } catch (error) {
+          console.log(error);
+          return [];
+        }
+      }
+    
+    getAllContacts();
   }, []);
 
   const openModalA = () => {
@@ -38,10 +42,10 @@ const Problem2 = () => {
     setShowModalC(false);
   };
 
-  const handleContactClick = (contact) => {
-    setSelectedContact(contact);
-    setShowModalC(true);
-  };
+//   const handleContactClick = (contact) => {
+//     setSelectedContact(contact);
+//     setShowModalC(true);
+//   };
 
 
   return (
@@ -60,12 +64,9 @@ const Problem2 = () => {
           </Modal.Header>
           
           <Modal.Body>
-            {allContacts.map(contact => (
-              <div 
-                key={contact.id}
-                onClick={() => handleContactClick(contact)}
-              >
-                {contact.name}
+          {allContacts.results && allContacts.results.map(contact => (
+              <div key={contact.id}>
+                <p>country: {contact.country.name}</p>
               </div>
             ))}
           </Modal.Body>
