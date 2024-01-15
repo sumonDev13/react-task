@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Modal, Button,Form } from 'react-bootstrap';
 
 const Problem2 = () => {
@@ -7,6 +7,22 @@ const Problem2 = () => {
   const [showModalC, setShowModalC] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
   const [onlyEven, setOnlyEven] = useState(false);
+
+
+  const [allContacts, setAllContacts] = useState([]);
+  const [usContacts, setUsContacts] = useState([]);
+
+  useEffect(() => {
+    // Fetch all contacts
+    fetch('https://contact.mediusware.com/api/contacts')
+      .then(res => res.json())
+      .then(data => setAllContacts(data));
+
+    // Fetch US contacts
+    fetch('https://contact.mediusware.com/api/contacts?country=US')
+      .then(res => res.json())
+      .then(data => setUsContacts(data));
+  }, []);
 
   const openModalA = () => {
     setShowModalA(true);
@@ -27,10 +43,6 @@ const Problem2 = () => {
     setShowModalC(true);
   };
 
-  // Fetch contacts from API
-
-  const allContacts = ["sumon","sagor"];
-  const usContacts = [];
 
   return (
     <div className="container">
